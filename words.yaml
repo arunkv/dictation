@@ -1,0 +1,65 @@
+config:
+  default: grade1
+  max_words: 10 
+  max_attempts: 3
+  openai_voice: echo
+
+grade1:
+  - mud
+  - jam
+  - sent
+  - term
+  - summer
+  - river
+  - number
+  - always
+  - also
+  - woodpecker
+  - fin
+  - sob
+  - left
+  - sink
+  - pink
+  - drink
+  - think
+  - once
+  - upon
+  - winking
+  - bad
+  - vet
+  - fact
+  - all
+  - talk
+  - walk
+  - small
+  - made
+  - their
+  - beanstalk
+  - got
+  - bun
+  - belt
+  - fork
+  - storm
+  - horse
+  - forty
+  - goes
+  - does
+  - morning
+
+
+grade3:
+  - Freedom
+  - Independence
+  - Monuments
+  - National
+  - Tradition
+  - Charming
+  - Gentle
+  - Friendly
+  - Resilient
+  - Immature
+  - Playfully
+  - Solidly
+  - Patiently
+  - Positively
+  - Stubbornly

@@ -1,16 +1,97 @@
-# This is a sample Python script.
+from pathlib import Path
+from openai import OpenAI
+import logging
+import os
+import pygame
+import random
+import time
+import yaml
 
-# Press ⌃R to execute it or replace it with your code.
-# Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
+WORDS_FILE = 'words.yaml'
+SPEECH_DIR = Path(__file__).parent / 'speech/'
+logging.basicConfig(filename='dictation.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s',
+                    level=logging.INFO)
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press ⌘F8 to toggle the breakpoint.
+def convert_to_lowercase(array):
+    return [item.lower() for item in array]
 
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+# Load the words from the yaml file
+def load_config_from_yaml(file_path):
+    with open(file_path, 'r') as file:
+        config = yaml.safe_load(file)
+        return config
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+
+def play_mp3(file_path):
+    pygame.mixer.init()
+    pygame.mixer.Sound(file_path).play()
+    time.sleep(1)
+    pygame.mixer.Sound(file_path).play()
+
+
+def speech_file_for_word(word, openai_voice):
+    return SPEECH_DIR / f"{word}-{openai_voice}.mp3"
+
+
+# Convert the words into speech using OpenAI's text to speech API
+# Needs the OPENAI_API_KEY environment variable to be set
+def generate_speech(words, openai_voice='alloy'):
+    client = OpenAI()
+    os.makedirs(SPEECH_DIR, exist_ok=True)
+    for word in words:
+        speech_file_path = speech_file_for_word(word, openai_voice)
+        if not os.path.isfile(speech_file_path):
+            with client.audio.speech.with_streaming_response.create(
+                    model="tts-1-hd",
+                    voice=openai_voice,
+                    input=word
+            ) as response:
+                response.stream_to_file(speech_file_path)
+                logging.info(f"{word}-{openai_voice}.mp3 generated successfully!")
+        else:
+            logging.warning(f"{word}-{openai_voice}.mp3 already exists")
+
+
+# Load the game configuration
+data = load_config_from_yaml(WORDS_FILE)
+word_section = data['config']['default']
+max_words = int(data['config']['max_words'])
+max_attempts = int(data['config']['max_attempts'])
+words = data[word_section]
+openai_voice = data['config']['openai_voice']
+
+# Select the words for the game
+dictation_words = convert_to_lowercase(words)
+dictation_words = random.sample(dictation_words, min(max_words, len(dictation_words)))
+logging.info(dictation_words)
+
+# Convert the words into speech
+generate_speech(dictation_words, openai_voice)
+
+# Play the dictation game
+pygame.init()
+score = 0
+
+for word in dictation_words:
+    logging.info(f"The word is {word}")
+    print(f"Write down the word you hear: ", end="")
+    speech_file_path = speech_file_for_word(word, openai_voice)
+    tries = 0
+    while True:
+        play_mp3(speech_file_path)
+        user_input = input()
+        if user_input.lower() == word:
+            score += 1
+            print("Correct!")
+            break
+        else:
+            tries += 1
+            if (tries == max_attempts):
+                print(f"Sorry, the word was {word}")
+                break
+            else:
+                print("Try again: ", end="")
+
+print(f"Your score is {score}/{len(dictation_words)}")
