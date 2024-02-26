@@ -56,11 +56,11 @@ def generate_speech(spoken_words, ai_voice='alloy'):
         speech_file = speech_file_for_word(spoken_word, ai_voice)
         if not os.path.isfile(speech_file):
             with client.audio.speech.with_streaming_response.create(
-                    model="tts-1-hd",
+                    model="tts-1",
                     voice=ai_voice,
                     input=spoken_word
             ) as response:
-                response.stream_to_file(speech_file_path)
+                response.stream_to_file(speech_file)
                 logging.info(f"{spoken_word}-{ai_voice}.mp3 generated successfully!")
         else:
             logging.warning(f"{spoken_word}-{ai_voice}.mp3 already exists")

@@ -1,8 +1,8 @@
 config:
-  default: grade3
-  max_words: 3
+  default: grade1
+  max_words: 5
   max_attempts: 3
-  openai_voice: echo
+  openai_voice: nova
 
 grade1:
   - mud
@@ -63,3 +63,28 @@ grade3:
   - Patiently
   - Positively
   - Stubbornly
+  - wrench
+  - peace
+  - medal
+  - peaches
+  - bread
+  - remember
+  - eggshell
+  - piece
+  - kept
+  - better
+  - reading
+  - metal
+  - yellow
+  - hello
+  - sentence
+  - Features
+  - information
+  - materials
+  - mixture
+  - explicit
+  - implicit
+  - solid
+  - liquid
+  - gases
+
