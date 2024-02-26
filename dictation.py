@@ -9,17 +9,17 @@
 #        http://www.apache.org/licenses/LICENSE-2.0
 
 import logging
-import os
 import random
 import time
 from pathlib import Path
 
 import pygame
 import yaml
-from openai import OpenAI
 from termcolor import colored
 
-WORDS_FILE = 'words.yaml'
+from tts import OpenAITTSFactory
+
+CONFIG_FILE = 'words.yaml'
 SPEECH_DIR = Path(__file__).parent / 'speech/'
 logging.basicConfig(filename='dictation.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
@@ -29,8 +29,8 @@ def convert_to_lowercase(array):
     return [item.lower() for item in array]
 
 
-# Load the words from the yaml file
-def load_config_from_yaml(file_path):
+# Load the configuration from the YAML file
+def load_config(file_path):
     with open(file_path, 'r') as file:
         config = yaml.safe_load(file)
         return config
@@ -43,53 +43,32 @@ def play_mp3(file_path):
     pygame.mixer.Sound(file_path).play()
 
 
-def speech_file_for_word(input_word, ai_voice):
-    return SPEECH_DIR / f"{input_word}-{ai_voice}.mp3"
-
-
-# Convert the words into speech using OpenAI's text to speech API
-# Needs the OPENAI_API_KEY environment variable to be set
-def generate_speech(spoken_words, ai_voice='alloy'):
-    client = OpenAI()
-    os.makedirs(SPEECH_DIR, exist_ok=True)
-    for spoken_word in spoken_words:
-        speech_file = speech_file_for_word(spoken_word, ai_voice)
-        if not os.path.isfile(speech_file):
-            with client.audio.speech.with_streaming_response.create(
-                    model="tts-1",
-                    voice=ai_voice,
-                    input=spoken_word
-            ) as response:
-                response.stream_to_file(speech_file)
-                logging.info(f"{spoken_word}-{ai_voice}.mp3 generated successfully!")
-        else:
-            logging.warning(f"{spoken_word}-{ai_voice}.mp3 already exists")
-
-
 # Load the game configuration
-data = load_config_from_yaml(WORDS_FILE)
-word_section = data['config']['default']
+data = load_config(CONFIG_FILE)
+grade = data['config']['grade']
 max_words = int(data['config']['max_words'])
 max_attempts = int(data['config']['max_attempts'])
-words = data[word_section]
-openai_voice = data['config']['openai_voice']
+words = data[grade]
+
+ai = data['config']['ai']
+ai_options = data[ai]
 
 # Select the words for the game
 dictation_words = convert_to_lowercase(words)
+random.seed(time.time())
 dictation_words = random.sample(dictation_words, min(max_words, len(dictation_words)))
 logging.info(dictation_words)
 
-# Convert the words into speech
-generate_speech(dictation_words, openai_voice)
-
 # Play the dictation game
+factory = OpenAITTSFactory()
+factory.create_tts()
 pygame.init()
 score = 0
 
 for word in dictation_words:
     logging.info(f"The word is {word}")
     print(f"Write down the word you hear: ", end="")
-    speech_file_path = speech_file_for_word(word, openai_voice)
+    speech_file_path = factory.get_speech_file(word, ai_options)
     tries = 0
     while True:
         play_mp3(speech_file_path)

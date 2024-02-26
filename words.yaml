@@ -1,8 +1,12 @@
 config:
-  default: grade1
+  ai: openai
+  grade: grade3
   max_words: 5
   max_attempts: 3
-  openai_voice: nova
+
+openai:
+  model: tts-1
+  voice: nova
 
 grade1:
   - mud
