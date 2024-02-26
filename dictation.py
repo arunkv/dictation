@@ -9,15 +9,17 @@
 #        http://www.apache.org/licenses/LICENSE-2.0
 
 import logging
+import os
 import random
 import time
 from pathlib import Path
 
-import pygame
 import yaml
+from colorama import Fore, init as colorama_init
+os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
+from pygame import init as pygame_init, mixer as pygame_mixer
 from termcolor import colored
-import colorama
-from colorama import Fore
+
 from tts import TTSFactory
 
 CONFIG_FILE = 'words.yaml'
@@ -37,11 +39,12 @@ def load_config(file_path):
         return config
 
 
+# Play an MP3 file twice with a 1-second delay
 def play_mp3(file_path):
-    pygame.mixer.init()
-    pygame.mixer.Sound(file_path).play()
+    pygame_mixer.init()
+    pygame_mixer.Sound(file_path).play()
     time.sleep(1)
-    pygame.mixer.Sound(file_path).play()
+    pygame_mixer.Sound(file_path).play()
 
 
 def main():
@@ -64,8 +67,11 @@ def main():
     # Play the dictation game
     factory = TTSFactory.get_tts(name=ai)
     factory.create_tts()
-    pygame.init()
-    colorama.init()
+
+    # Initialize Pygame
+    pygame_init()
+
+    colorama_init()
     score = 0
 
     for word in dictation_words:
@@ -93,4 +99,8 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        print("\nBye!")
+
