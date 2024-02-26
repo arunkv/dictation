@@ -82,10 +82,15 @@ class GoogleTTSFactory(TTSFactory):
     audio_config: texttospeech.AudioConfig = None
 
     def create_tts(self):
+        self.name = "google"
         self.client = texttospeech.TextToSpeechClient()
         self.audio_config = texttospeech.AudioConfig(
             audio_encoding=texttospeech.AudioEncoding.MP3
         )
+
+    # Convert the word into speech using Google's text to speech API
+    # Needs Cloud Text-to-Speech API to be enabled
+    # Authentication to be set up by running `gcloud auth application-default login`
 
     def get_speech_file(self, input_word: str, ai_options: dict) -> Path:
         ai_gender_name = ai_options.get('gender', self.DEFAULT_GENDER).lower()
@@ -94,8 +99,9 @@ class GoogleTTSFactory(TTSFactory):
             'female': texttospeech.SsmlVoiceGender.FEMALE,
             'neutral': texttospeech.SsmlVoiceGender.NEUTRAL,
         }.get(ai_gender_name, texttospeech.SsmlVoiceGender.NEUTRAL)
-
-        speech_file: Path = SPEECH_DIR / f"{input_word}-{ai_gender_name}.mp3"
+        speech_dir: Path = SPEECH_DIR / f"{self.name}"
+        os.makedirs(speech_dir, exist_ok=True)
+        speech_file: Path = speech_dir / f"{input_word}-{ai_gender_name}.mp3"
         if not os.path.isfile(speech_file):
             synthesis_input = texttospeech.SynthesisInput(text=input_word)
             voice = texttospeech.VoiceSelectionParams(
