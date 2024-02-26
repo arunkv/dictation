@@ -44,48 +44,53 @@ def play_mp3(file_path):
     pygame.mixer.Sound(file_path).play()
 
 
-# Load the game configuration
-data = load_config(CONFIG_FILE)
-grade = data['config']['grade']
-max_words = int(data['config']['max_words'])
-max_attempts = int(data['config']['max_attempts'])
-words = data[grade]
+def main():
+    # Load the game configuration
+    data = load_config(CONFIG_FILE)
+    grade = data['config']['grade']
+    max_words = int(data['config']['max_words'])
+    max_attempts = int(data['config']['max_attempts'])
+    words = data[grade]
 
-ai = data['config']['ai']
-ai_options = data.get(ai, {})
+    ai = data['config']['ai']
+    ai_options = data.get(ai, {})
 
-# Select the words for the game
-dictation_words = convert_to_lowercase(words)
-random.seed(time.time())
-dictation_words = random.sample(dictation_words, min(max_words, len(dictation_words)))
-logging.info(dictation_words)
+    # Select the words for the game
+    dictation_words = convert_to_lowercase(words)
+    random.seed(time.time())
+    dictation_words = random.sample(dictation_words, min(max_words, len(dictation_words)))
+    logging.info(dictation_words)
 
-# Play the dictation game
-factory = TTSFactory.get_tts(name=ai)
-factory.create_tts()
-pygame.init()
-colorama.init()
-score = 0
+    # Play the dictation game
+    factory = TTSFactory.get_tts(name=ai)
+    factory.create_tts()
+    pygame.init()
+    colorama.init()
+    score = 0
 
-for word in dictation_words:
-    logging.info(f"The word is {word}")
-    print(f"Write down the word you hear: ", end="")
-    speech_file_path = factory.get_speech_file(word, ai_options)
-    tries = 0
-    while True:
-        play_mp3(speech_file_path)
-        user_input = input(Fore.CYAN)
-        print(Fore.RESET, end="")
-        if user_input.lower() == word:
-            score += 1
-            print(colored("Correct!", 'green'))
-            break
-        else:
-            tries += 1
-            if tries == max_attempts:
-                print(colored(f"Sorry, the word was {word}", 'red'))
+    for word in dictation_words:
+        logging.info(f"The word is {word}")
+        print(f"Write down the word you hear: ", end="")
+        speech_file_path = factory.get_speech_file(word, ai_options)
+        tries = 0
+        while True:
+            play_mp3(speech_file_path)
+            user_input = input(Fore.CYAN)
+            print(Fore.RESET, end="")
+            if user_input.lower() == word:
+                score += 1
+                print(colored("Correct!", 'green'))
                 break
             else:
-                print(colored("Try again: ", 'yellow'), end="")
+                tries += 1
+                if tries == max_attempts:
+                    print(colored(f"Sorry, the word was {word}", 'red'))
+                    break
+                else:
+                    print(colored("Try again: ", 'yellow'), end="")
 
-print(colored(f"Your score is {score}/{len(dictation_words)}", 'green'))
+    print(colored(f"Your score is {score}/{len(dictation_words)}", 'green'))
+
+
+if __name__ == "__main__":
+    main()

@@ -1,15 +1,15 @@
 config:
   ai: google
-  grade: grade3
-  max_words: 5
-  max_attempts: 3
+  grade: grade1
+  max_words: 10
+  max_attempts: 2
 
 openai:
   model: tts-1
   voice: nova
 
 google:
-  gender: female
+  gender: neutral
 
 grade1:
   - mud
@@ -94,4 +94,78 @@ grade3:
   - solid
   - liquid
   - gases
+  - Beautiful
+  - Haunting
+  - Imaginative
+  - Soulful
+  - Evocative
+  - Lyrical
+  - Captivating
+  - Thought-provoking
+  - Timeless
+  - Expressive
+  - Enigmatic
+  - Beach
+  - couch
+  - bench
+  - stretch
+  - pitch
+  - catch
+  - patch
+  - reach
+  - touch
+  - speech
+  - flourish
+  - diminish
+  - sluggish
+  - backlash
+  - childish
+  - demolish
+  - feverish
+  - Lightweight
+  - searchlight
+  - forethought
+  - streetlight
+  - overthought
+  - plight
+  - sight
+  - height
+  - spaceflight
+  - overweight
+  - syllables
+  - squabble
+  - conclusion
+  - opposition
+  - decoration
+  - celebration
+  - transition
+  - depression
+  - suggestion
+  - destruction
+  - discovered
+  - description
+  - worker
+  - dollar
+  - nectar
+  - visitor
+  - clever
+  - horror
+  - humor
+  - singer
+  - mayor
+  - vinegar
+  - inventor
+  - Substance
+  - matter
+  - particles
+  - properties
+  - behavior
+  - paraphrase
+  - jotting
+  - research
+  - physical
+  - melting
+  - freezing
+
+
 
