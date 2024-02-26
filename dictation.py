@@ -16,7 +16,8 @@ from pathlib import Path
 import pygame
 import yaml
 from termcolor import colored
-
+import colorama
+from colorama import Fore
 from tts import TTSFactory
 
 CONFIG_FILE = 'words.yaml'
@@ -63,6 +64,7 @@ logging.info(dictation_words)
 factory = TTSFactory.get_tts(name=ai)
 factory.create_tts()
 pygame.init()
+colorama.init()
 score = 0
 
 for word in dictation_words:
@@ -72,7 +74,8 @@ for word in dictation_words:
     tries = 0
     while True:
         play_mp3(speech_file_path)
-        user_input = input()
+        user_input = input(Fore.CYAN)
+        print(Fore.RESET, end="")
         if user_input.lower() == word:
             score += 1
             print(colored("Correct!", 'green'))
@@ -80,7 +83,7 @@ for word in dictation_words:
         else:
             tries += 1
             if tries == max_attempts:
-                print(colored(f"Sorry, the word was {word}"), 'red')
+                print(colored(f"Sorry, the word was {word}", 'red'))
                 break
             else:
                 print(colored("Try again: ", 'yellow'), end="")

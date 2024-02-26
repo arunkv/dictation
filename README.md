@@ -8,6 +8,7 @@ Simple game that helps children practice dictaion.
 * `pygame` (https://www.pygame.org/)
 * `pyyaml` (https://pyyaml.org/)
 * `termcolor` (https://pypi.org/project/termcolor/)
+*  `colorama` (https://pypi.org/project/colorama/)
 * `openai` (https://pypi.org/project/openai/)
 * `google-cloud-texttospeech` (https://pypi.org/project/google-cloud-texttospeech/)
 
