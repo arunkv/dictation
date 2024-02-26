@@ -17,7 +17,7 @@ import pygame
 import yaml
 from termcolor import colored
 
-from tts import OpenAITTSFactory
+from tts import TTSFactory
 
 CONFIG_FILE = 'words.yaml'
 SPEECH_DIR = Path(__file__).parent / 'speech/'
@@ -51,7 +51,7 @@ max_attempts = int(data['config']['max_attempts'])
 words = data[grade]
 
 ai = data['config']['ai']
-ai_options = data[ai]
+ai_options = data.get(ai, {})
 
 # Select the words for the game
 dictation_words = convert_to_lowercase(words)
@@ -60,7 +60,7 @@ dictation_words = random.sample(dictation_words, min(max_words, len(dictation_wo
 logging.info(dictation_words)
 
 # Play the dictation game
-factory = OpenAITTSFactory()
+factory = TTSFactory.get_tts(name=ai)
 factory.create_tts()
 pygame.init()
 score = 0

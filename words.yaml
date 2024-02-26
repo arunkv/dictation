@@ -1,5 +1,5 @@
 config:
-  ai: openai
+  ai: google
   grade: grade3
   max_words: 5
   max_attempts: 3
@@ -7,6 +7,9 @@ config:
 openai:
   model: tts-1
   voice: nova
+
+google:
+  gender: female
 
 grade1:
   - mud

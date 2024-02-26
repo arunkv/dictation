@@ -14,6 +14,7 @@ import os
 from abc import ABC, abstractmethod
 from pathlib import Path
 
+from google.cloud import texttospeech
 from openai import OpenAI
 
 SPEECH_DIR = Path(__file__).parent / 'speech/'
@@ -22,6 +23,15 @@ logging.basicConfig(filename='tts.log', filemode='w', format='%(name)s - %(level
 
 
 class TTSFactory(ABC):
+    @staticmethod
+    def get_tts(name: str):
+        if name == "openai":
+            return OpenAITTSFactory()
+        elif name == "google":
+            return GoogleTTSFactory()
+        else:
+            return None
+
     @abstractmethod
     def create_tts(self):
         pass
@@ -39,7 +49,7 @@ class OpenAITTSFactory(TTSFactory):
     client: OpenAI = None
 
     def create_tts(self):
-        self.name = "OpenAI"
+        self.name = "openai"
         self.client = OpenAI()
 
     # Convert the word into speech using OpenAI's text to speech API
@@ -61,4 +71,42 @@ class OpenAITTSFactory(TTSFactory):
                 logging.info(f"{speech_file} generated successfully!")
         else:
             logging.warning(f"{speech_file} already exists")
+        return speech_file
+
+
+class GoogleTTSFactory(TTSFactory):
+    DEFAULT_GENDER = 'neutral'
+
+    name: str = None
+    client: texttospeech.TextToSpeechClient = None
+    audio_config: texttospeech.AudioConfig = None
+
+    def create_tts(self):
+        self.client = texttospeech.TextToSpeechClient()
+        self.audio_config = texttospeech.AudioConfig(
+            audio_encoding=texttospeech.AudioEncoding.MP3
+        )
+
+    def get_speech_file(self, input_word: str, ai_options: dict) -> Path:
+        ai_gender_name = ai_options.get('gender', self.DEFAULT_GENDER).lower()
+        ai_gender = {
+            'male': texttospeech.SsmlVoiceGender.MALE,
+            'female': texttospeech.SsmlVoiceGender.FEMALE,
+            'neutral': texttospeech.SsmlVoiceGender.NEUTRAL,
+        }.get(ai_gender_name, texttospeech.SsmlVoiceGender.NEUTRAL)
+
+        speech_file: Path = SPEECH_DIR / f"{input_word}-{ai_gender_name}.mp3"
+        if not os.path.isfile(speech_file):
+            synthesis_input = texttospeech.SynthesisInput(text=input_word)
+            voice = texttospeech.VoiceSelectionParams(
+                language_code='en-US',
+                ssml_gender=ai_gender,
+            )
+            response = self.client.synthesize_speech(
+                input=synthesis_input,
+                voice=voice,
+                audio_config=self.audio_config
+            )
+            with open(speech_file, 'wb') as out:
+                out.write(response.audio_content)
         return speech_file
