@@ -1,6 +1,6 @@
 config:
-  default: grade1
-  max_words: 10 
+  default: grade3
+  max_words: 3
   max_attempts: 3
   openai_voice: echo
 

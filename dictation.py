@@ -1,11 +1,13 @@
-from pathlib import Path
-from openai import OpenAI
 import logging
 import os
-import pygame
 import random
 import time
+from pathlib import Path
+
+import pygame
 import yaml
+from openai import OpenAI
+from termcolor import colored
 
 WORDS_FILE = 'words.yaml'
 SPEECH_DIR = Path(__file__).parent / 'speech/'
@@ -31,27 +33,27 @@ def play_mp3(file_path):
     pygame.mixer.Sound(file_path).play()
 
 
-def speech_file_for_word(word, openai_voice):
-    return SPEECH_DIR / f"{word}-{openai_voice}.mp3"
+def speech_file_for_word(input_word, ai_voice):
+    return SPEECH_DIR / f"{input_word}-{ai_voice}.mp3"
 
 
 # Convert the words into speech using OpenAI's text to speech API
 # Needs the OPENAI_API_KEY environment variable to be set
-def generate_speech(words, openai_voice='alloy'):
+def generate_speech(spoken_words, ai_voice='alloy'):
     client = OpenAI()
     os.makedirs(SPEECH_DIR, exist_ok=True)
-    for word in words:
-        speech_file_path = speech_file_for_word(word, openai_voice)
-        if not os.path.isfile(speech_file_path):
+    for spoken_word in spoken_words:
+        speech_file = speech_file_for_word(spoken_word, ai_voice)
+        if not os.path.isfile(speech_file):
             with client.audio.speech.with_streaming_response.create(
                     model="tts-1-hd",
-                    voice=openai_voice,
-                    input=word
+                    voice=ai_voice,
+                    input=spoken_word
             ) as response:
                 response.stream_to_file(speech_file_path)
-                logging.info(f"{word}-{openai_voice}.mp3 generated successfully!")
+                logging.info(f"{spoken_word}-{ai_voice}.mp3 generated successfully!")
         else:
-            logging.warning(f"{word}-{openai_voice}.mp3 already exists")
+            logging.warning(f"{spoken_word}-{ai_voice}.mp3 already exists")
 
 
 # Load the game configuration
@@ -84,14 +86,14 @@ for word in dictation_words:
         user_input = input()
         if user_input.lower() == word:
             score += 1
-            print("Correct!")
+            print(colored("Correct!", 'green'))
             break
         else:
             tries += 1
-            if (tries == max_attempts):
-                print(f"Sorry, the word was {word}")
+            if tries == max_attempts:
+                print(colored(f"Sorry, the word was {word}"), 'red')
                 break
             else:
-                print("Try again: ", end="")
+                print(colored("Try again: ", 'yellow'), end="")
 
-print(f"Your score is {score}/{len(dictation_words)}")
+print(colored(f"Your score is {score}/{len(dictation_words)}", 'green'))
