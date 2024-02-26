@@ -116,3 +116,4 @@ class GoogleTTSFactory(TTSFactory):
             with open(speech_file, 'wb') as out:
                 out.write(response.audio_content)
         return speech_file
+

@@ -16,11 +16,12 @@ from pathlib import Path
 
 import yaml
 from colorama import Fore, init as colorama_init
-os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
-from pygame import init as pygame_init, mixer as pygame_mixer
 from termcolor import colored
 
 from tts import TTSFactory
+
+os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
+from pygame import init as pygame_init, mixer as pygame_mixer
 
 CONFIG_FILE = 'words.yaml'
 SPEECH_DIR = Path(__file__).parent / 'speech/'
@@ -80,7 +81,10 @@ def main():
         speech_file_path = factory.get_speech_file(word, ai_options)
         tries = 0
         while True:
-            play_mp3(speech_file_path)
+            try:
+                play_mp3(speech_file_path)
+            except Exception:
+                os.system(f"say {word}")
             user_input = input(Fore.CYAN)
             print(Fore.RESET, end="")
             if user_input.lower() == word:
@@ -103,4 +107,3 @@ if __name__ == "__main__":
         main()
     except KeyboardInterrupt:
         print("\nBye!")
-
