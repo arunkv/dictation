@@ -1,6 +1,7 @@
 # Dictation Game
 
-Simple game that helps children practice dictaion.
+**Dictation game for kids to practice their spelling.**
+
 * Uses either OpenAI's TTS API or Google's TTS API to generate audio for the words. 
 * [The Sound of Learning: Using OpenAI’s Text-to-Speech API for a Simple Dictation Game for Kids](https://arunkv.medium.com/the-sound-of-learning-using-openais-text-to-speech-api-for-a-simple-dictation-game-for-kids-e237db497ad1)
 
