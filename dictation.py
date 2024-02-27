@@ -8,6 +8,7 @@
 #
 #        http://www.apache.org/licenses/LICENSE-2.0
 
+import argparse
 import logging
 import os
 import random
@@ -48,10 +49,10 @@ def play_mp3(file_path):
     pygame_mixer.Sound(file_path).play()
 
 
-def main():
+def dictation_game(grade_override=None):
     # Load the game configuration
     data = load_config(CONFIG_FILE)
-    grade = data['config']['grade']
+    grade = grade_override or data['config']['grade']
     max_words = int(data['config']['max_words'])
     max_attempts = int(data['config']['max_attempts'])
     words = data[grade]
@@ -100,6 +101,13 @@ def main():
                     print(colored("Try again: ", 'yellow'), end="")
 
     print(colored(f"Your score is {score}/{len(dictation_words)}", 'green'))
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Dictation game.")
+    parser.add_argument("--grade", help="The grade for the dictation game")
+    args = parser.parse_args()
+    dictation_game(args.grade)
 
 
 if __name__ == "__main__":
