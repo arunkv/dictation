@@ -26,6 +26,7 @@ from tts import TTSFactory
 CONFIG_FILE = 'words.yaml'
 STATS_FILE = 'stats.pkl'  # Local file to store the game statistics
 SPEECH_DIR = Path(__file__).parent / 'speech/'
+WIN_SOUND_FILE = Path(__file__).parent / 'sounds/win.wav'
 logging.basicConfig(filename='dictation.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
 
@@ -41,12 +42,17 @@ def load_config(file_path):
         return config
 
 
-# Play an MP3 file twice with a 1-second delay
-def play_mp3(file_path):
+# Play a sound file.
+# If times > 1, the sound is played multiple times with a 1 second delay
+def play_sound_file(file_path, times=1):
     pygame_mixer.init()
-    pygame_mixer.Sound(file_path).play()
-    time.sleep(1)
-    pygame_mixer.Sound(file_path).play()
+    while times > 0:
+        pygame_mixer.Sound(file_path).play()
+        times = times - 1
+        if times > 0:
+            time.sleep(1)
+        else:
+            time.sleep(0.25)
 
 
 def dictation_game(grade_override=None):
@@ -99,16 +105,17 @@ def dictation_game(grade_override=None):
                 # Play the word and track as used
                 try:
                     stats[word] = stats.get(word, 0) + 1
-                    play_mp3(speech_file_path)
+                    play_sound_file(speech_file_path, 2)
                 except pygame_error as e:
                     logging.error(f"Error playing {speech_file_path}: {e}")
                     os.system(f"say {word}")
 
                 # Get user input and compare
-                user_input = input(Fore.CYAN)
+                user_input = input(Fore.CYAN).strip().lower()
                 print(Fore.RESET, end="")
                 if user_input.lower() == word:
                     score += 1
+                    play_sound_file(WIN_SOUND_FILE)
                     print(colored("Correct!", 'green'))
                     break
                 else:

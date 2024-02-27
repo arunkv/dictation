@@ -9,7 +9,7 @@
 * `pygame` (https://www.pygame.org/)
 * `pyyaml` (https://pyyaml.org/)
 * `termcolor` (https://pypi.org/project/termcolor/)
-*  `colorama` (https://pypi.org/project/colorama/)
+* `colorama` (https://pypi.org/project/colorama/)
 * `openai` (https://pypi.org/project/openai/)
 * `google-cloud-texttospeech` (https://pypi.org/project/google-cloud-texttospeech/)
 
@@ -26,3 +26,6 @@ To use Google's TTS::
 ## Usage
 * `python dictation_game.py [--grade {grade1|grade3}]`
 * Use grades as named in `words.yaml` configuration file
+
+## Attributions
+* Uses [`Jingle_Win_Synth_06.wav`](https://freesound.org/people/LittleRobotSoundFactory/sounds/274181/) from `LittleRobotSoundFactory` under CC BY 4.0 DEED Attribution 4.0 International license
