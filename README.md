@@ -21,3 +21,7 @@ To use Google's TTS::
 * Google's TTS-API (https://cloud.google.com/text-to-speech/docs)
 * Enable Cloud Text-to-Speech API (https://console.cloud.google.com/flows/enableapi?apiid=texttospeech.googleapis.com)
 * Authenticate via `gcloud auth application-default login`
+
+## Usage
+* `python dictation_game.py [--grade {grade1|grade3}]`
+* Use grades as named in `words.yaml` configuration file
