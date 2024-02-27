@@ -18,9 +18,6 @@ from google.cloud import texttospeech
 from openai import OpenAI
 
 SPEECH_DIR = Path(__file__).parent / 'speech/'
-logging.basicConfig(filename='tts.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s',
-                    level=logging.INFO)
-
 
 class TTSFactory(ABC):
     @staticmethod
