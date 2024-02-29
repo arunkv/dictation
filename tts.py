@@ -18,7 +18,6 @@ from google.cloud import texttospeech
 from openai import OpenAI
 
 SPEECH_DIR = Path(__file__).parent / 'speech/'
-
 class TTSFactory(ABC):
     @staticmethod
     def get_tts(name: str):
@@ -81,9 +80,9 @@ class GoogleTTSFactory(TTSFactory):
     def create_tts(self):
         self.name = "google"
         self.client = texttospeech.TextToSpeechClient()
-        self.audio_config = texttospeech.AudioConfig(
-            audio_encoding=texttospeech.AudioEncoding.MP3
-        )
+        self.audio_config = texttospeech.AudioConfig({
+            'audio_encoding': texttospeech.AudioEncoding.MP3
+        })
 
     # Convert the word into speech using Google's text to speech API
     # Needs Cloud Text-to-Speech API to be enabled
@@ -100,11 +99,11 @@ class GoogleTTSFactory(TTSFactory):
         os.makedirs(speech_dir, exist_ok=True)
         speech_file: Path = speech_dir / f"{input_word}-{ai_gender_name}.mp3"
         if not os.path.isfile(speech_file):
-            synthesis_input = texttospeech.SynthesisInput(text=input_word)
-            voice = texttospeech.VoiceSelectionParams(
-                language_code='en-US',
-                ssml_gender=ai_gender,
-            )
+            synthesis_input = texttospeech.SynthesisInput({'text': input_word})
+            voice = texttospeech.VoiceSelectionParams({
+                'language_code': 'en-US',
+                'ssml_gender': ai_gender,
+            })
             response = self.client.synthesize_speech(
                 input=synthesis_input,
                 voice=voice,

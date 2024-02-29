@@ -132,7 +132,7 @@ def dictation_game(grade_override=None):
             logging.debug(f"Saved stats (interrupted): {stats}")
             pickle.dump(stats, f)
 
-    print(colored(f"Your score is {score}/{len(dictation_words)}", 'green'))
+    print(colored(f"\nYour score is {score}/{len(dictation_words)}", 'green'))
 
 
 def main():
