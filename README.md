@@ -26,3 +26,7 @@
 
 ## Attributions
 * Uses [`Jingle_Win_Synth_06.wav`](https://freesound.org/people/LittleRobotSoundFactory/sounds/274181/) from `LittleRobotSoundFactory` under CC BY 4.0 DEED Attribution 4.0 International license
+
+## Activity
+- ![GitHub commit activity](https://img.shields.io/github/commit-activity/t/arunkv/dictation)
+- ![GitHub last commit](https://img.shields.io/github/last-commit/arunkv/dictation)
