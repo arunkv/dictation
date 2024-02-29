@@ -27,12 +27,8 @@ CONFIG_FILE = 'words.yaml'
 STATS_FILE = 'stats.pkl'  # Local file to store the game statistics
 SPEECH_DIR = Path(__file__).parent / 'speech/'
 WIN_SOUND_FILE = Path(__file__).parent / 'sounds/win.wav'
-logging.basicConfig(filename='dictation.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s',
-                    level=logging.INFO)
-
-
-def convert_to_lowercase(array):
-    return [item.lower() for item in array]
+logging.basicConfig(filename='dictation.log', filemode='a', level=logging.INFO,
+                    format='%(asctime)s - %(levelname)s - %(message)s')
 
 
 # Load the configuration from the YAML file
@@ -43,7 +39,7 @@ def load_config(file_path):
 
 
 # Play a sound file.
-# If times > 1, the sound is played multiple times with a 1 second delay
+# If times > 1, the sound is played multiple times with a 1-second delay
 def play_sound_file(file_path, times=1):
     pygame_mixer.init()
     while times > 0:
@@ -61,7 +57,8 @@ def dictation_game(grade_override=None):
     grade = grade_override or data['config']['grade']
     max_words = int(data['config']['max_words'])
     max_attempts = int(data['config']['max_attempts'])
-    words = data[grade]
+    words = list(set(data[grade]))  # Remove duplicates
+
     ai = data['config']['ai']
     ai_options = data.get(ai, {})
 
@@ -86,7 +83,7 @@ def dictation_game(grade_override=None):
         stats[word] = stats.get(word, 1)
 
     # Select the words for the game
-    dictation_words = convert_to_lowercase(words)
+    dictation_words = [item.lower() for item in words]
     random.seed(time.time())
     word_weights = [1 / (stats.get(word, 1)) for word in dictation_words]
     dictation_words = random.choices(dictation_words, weights=word_weights, k=min(max_words, len(dictation_words)))
@@ -143,6 +140,7 @@ def main():
     parser.add_argument("--grade", help="The grade for the dictation game")
     args = parser.parse_args()
     dictation_game(args.grade)
+    logging.shutdown()
 
 
 if __name__ == "__main__":
