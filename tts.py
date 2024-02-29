@@ -18,6 +18,8 @@ from google.cloud import texttospeech
 from openai import OpenAI
 
 SPEECH_DIR = Path(__file__).parent / 'speech/'
+
+
 class TTSFactory(ABC):
     @staticmethod
     def get_tts(name: str):
@@ -112,4 +114,3 @@ class GoogleTTSFactory(TTSFactory):
             with open(speech_file, 'wb') as out:
                 out.write(response.audio_content)
         return speech_file
-
