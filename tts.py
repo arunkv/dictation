@@ -35,7 +35,7 @@ class TTSFactory(ABC):
         pass
 
     @abstractmethod
-    def get_speech_file(self, input_word: str, ai_options: dict) -> Path:
+    def generate_speech_file(self, input_word: str, ai_options: dict) -> Path:
         pass
 
 
@@ -52,7 +52,7 @@ class OpenAITTSFactory(TTSFactory):
 
     # Convert the word into speech using OpenAI's text to speech API
     # Needs the OPENAI_API_KEY environment variable to be set
-    def get_speech_file(self, input_word: str, ai_options: dict) -> Path:
+    def generate_speech_file(self, input_word: str, ai_options: dict) -> Path:
         ai_model = ai_options.get('model', self.DEFAULT_MODEL)
         ai_voice = ai_options.get('voice', self.DEFAULT_VOICE)
         speech_dir: Path = SPEECH_DIR / f"{self.name}"
@@ -90,7 +90,7 @@ class GoogleTTSFactory(TTSFactory):
     # Needs Cloud Text-to-Speech API to be enabled
     # Authentication to be set up by running `gcloud auth application-default login`
 
-    def get_speech_file(self, input_word: str, ai_options: dict) -> Path:
+    def generate_speech_file(self, input_word: str, ai_options: dict) -> Path:
         ai_gender_name = ai_options.get('gender', self.DEFAULT_GENDER).lower()
         ai_gender = {
             'male': texttospeech.SsmlVoiceGender.MALE,

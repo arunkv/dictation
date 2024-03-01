@@ -27,7 +27,6 @@ from tts import TTSFactory
 CONFIG_FILE = 'words.yaml'
 CACHE_DIR = Path(__file__).parent / 'cache'
 STATS_FILE = CACHE_DIR / 'stats.pkl'  # Local file to store the game statistics
-SPEECH_DIR = CACHE_DIR / 'speech/'
 WIN_SOUND_FILE = Path(__file__).parent / 'sounds/win.wav'
 logging.basicConfig(filename='dictation.log', filemode='a', level=logging.INFO,
                     format='%(asctime)s - %(levelname)s - %(message)s')
@@ -111,7 +110,7 @@ def dictation_game(grade_override=None):
             logging.info(f"The word is {word}")
 
             print(f"Write down the word you hear: ", end="")
-            speech_file_path = factory.get_speech_file(word, ai_options)
+            speech_file_path = factory.generate_speech_file(word, ai_options)
             tries = 0
             while True:
                 # Play the word and track as used
