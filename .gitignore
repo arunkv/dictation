@@ -162,6 +162,5 @@ cython_debug/
 
 .DS_Store
 
-speech/
+cache/*
 
-stats.pkl

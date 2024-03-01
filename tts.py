@@ -17,7 +17,7 @@ from pathlib import Path
 from google.cloud import texttospeech
 from openai import OpenAI
 
-SPEECH_DIR = Path(__file__).parent / 'speech/'
+SPEECH_DIR = Path(__file__).parent / 'cache/speech/'
 
 
 class TTSFactory(ABC):

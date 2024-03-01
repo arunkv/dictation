@@ -9,7 +9,7 @@ openai:
   voice: nova
 
 google:
-  gender: neutral
+  gender: female
 
 grade1:
   - mud

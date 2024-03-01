@@ -25,8 +25,9 @@ from termcolor import colored
 from tts import TTSFactory
 
 CONFIG_FILE = 'words.yaml'
-STATS_FILE = 'stats.pkl'  # Local file to store the game statistics
-SPEECH_DIR = Path(__file__).parent / 'speech/'
+CACHE_DIR = Path(__file__).parent / 'cache'
+STATS_FILE = CACHE_DIR / 'stats.pkl'  # Local file to store the game statistics
+SPEECH_DIR = CACHE_DIR / 'speech/'
 WIN_SOUND_FILE = Path(__file__).parent / 'sounds/win.wav'
 logging.basicConfig(filename='dictation.log', filemode='a', level=logging.INFO,
                     format='%(asctime)s - %(levelname)s - %(message)s')
@@ -52,12 +53,8 @@ def play_sound_file(file_path, times=1):
             time.sleep(0.25)
 
 
-def dictation_game(grade_override=None):
-    # Load the game configuration
-    data = load_config(CONFIG_FILE)
+def get_words_for_grade(data, grade_override):
     grade = grade_override or data['config']['grade']
-    max_words = int(data['config']['max_words'])
-    max_attempts = int(data['config']['max_attempts'])
     if grade is None or grade == 'nltk':
         try:
             words = nltk.corpus.words.words()
@@ -66,10 +63,17 @@ def dictation_game(grade_override=None):
             logging.info("Downloading NLTK words corpus")
             words = nltk.corpus.words.words()
             logging.info(f"NLTK words corpus downloaded with {len(words)} words")
-
     else:
         words = list(set(data[grade]))  # Remove duplicates
+    return words
 
+
+def dictation_game(grade_override=None):
+    # Load the game configuration
+    data = load_config(CONFIG_FILE)
+    words = get_words_for_grade(data, grade_override)
+    max_words = int(data['config']['max_words'])
+    max_attempts = int(data['config']['max_attempts'])
     ai = data['config']['ai']
     ai_options = data.get(ai, {})
 
