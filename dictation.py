@@ -111,7 +111,7 @@ def dictation_game(grade_override=None):
         for word in dictation_words:
             logging.info("The word is %s", word)
 
-            print(f"Write down the word you hear: ", end="")
+            print("Write down the word you hear: ", end="")
             speech_file_path = factory.generate_speech_file(word, ai_options)
             tries = 0
             while True:
