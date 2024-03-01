@@ -38,7 +38,7 @@ logging.basicConfig(filename='dictation.log', filemode='a', level=logging.INFO,
 
 # Load the configuration from the YAML file
 def load_config(file_path):
-    with open(file_path, 'r') as file:
+    with open(file_path, 'r', encoding='utf-8') as file:
         config = yaml.safe_load(file)
         return config
 
@@ -131,15 +131,12 @@ def dictation_game(grade_override=None):
                     play_sound_file(WIN_SOUND_FILE)
                     print(colored("Correct!", 'green'))
                     break
-                else:
-                    tries += 1
-                    # Decrease the word's usage so that it is played more often
-                    stats[word] = max(1, stats.get(word, 0) - 1)
-                    if tries == int(data['config']['max_attempts']):
-                        print(colored(f"Sorry, the word was {word}", 'red'))
-                        break
-                    else:
-                        print(colored("Try again: ", 'yellow'), end="")
+                tries += 1
+                # Decrease the word's usage so that it is played more often
+                stats[word] = max(1, stats.get(word, 0) - 1)
+                if tries == int(data['config']['max_attempts']):
+                    print(colored(f"Sorry, the word was {word}", 'red'))
+                print(colored("Try again: ", 'yellow'), end="")
         save_stats(stats)
     except KeyboardInterrupt:
         save_stats(stats)

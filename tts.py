@@ -1,4 +1,5 @@
-# Description: Factory class that creates a text-to-speech (TTS) client and generates speech for the words
+# Description: Factory class that creates a text-to-speech (TTS) client and generates
+# speech for the words
 
 #    Copyright 2024 Arun K Viswanathan
 #
@@ -25,10 +26,9 @@ class TTSFactory(ABC):
     def get_tts(name: str):
         if name == "openai":
             return OpenAITTSFactory()
-        elif name == "google":
+        if name == "google":
             return GoogleTTSFactory()
-        else:
-            return None
+        return None
 
     @abstractmethod
     def create_tts(self):
