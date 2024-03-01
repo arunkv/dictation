@@ -1,6 +1,6 @@
 config:
   ai: google
-  grade: grade3
+  grade: grade1
   max_words: 5
   max_attempts: 2
 

@@ -10,23 +10,21 @@
 
 import argparse
 import logging
-import nltk
 import os
-import pickle
 import random
 import time
 from pathlib import Path
 
+import nltk
 import yaml
 from colorama import Fore, init as colorama_init
-from pygame import init as pygame_init, mixer as pygame_mixer, error as pygame_error
+from pygame import error as pygame_error, init as pygame_init, mixer as pygame_mixer
 from termcolor import colored
 
+from stats import load_stats, save_stats
 from tts import TTSFactory
 
 CONFIG_FILE = 'words.yaml'
-CACHE_DIR = Path(__file__).parent / 'cache'
-STATS_FILE = CACHE_DIR / 'stats.pkl'  # Local file to store the game statistics
 WIN_SOUND_FILE = Path(__file__).parent / 'sounds/win.wav'
 logging.basicConfig(filename='dictation.log', filemode='a', level=logging.INFO,
                     format='%(asctime)s - %(levelname)s - %(message)s')
@@ -67,6 +65,18 @@ def get_words_for_grade(data, grade_override):
     return words
 
 
+def select_dictation_words(words, max_words):
+    stats = load_stats(words)
+
+    # Select the words for the game
+    dictation_words = [item.lower() for item in words]
+    random.seed(time.time())
+    word_weights = [1 / (stats.get(word, 1)) for word in dictation_words]
+    dictation_words = random.choices(dictation_words, weights=word_weights, k=min(max_words, len(dictation_words)))
+    logging.info(dictation_words)
+    return dictation_words, stats
+
+
 def dictation_game(grade_override=None):
     # Load the game configuration
     data = load_config(CONFIG_FILE)
@@ -86,22 +96,8 @@ def dictation_game(grade_override=None):
     # Initialize colorama
     colorama_init()
 
-    # Set up stats tracking
-    if os.path.exists(STATS_FILE):
-        with open(STATS_FILE, 'rb') as file:
-            stats = pickle.load(file)
-            logging.debug(f"Loaded stats: {stats}")
-    else:
-        stats = {}
-    for word in words:
-        stats[word] = stats.get(word, 1)
-
-    # Select the words for the game
-    dictation_words = [item.lower() for item in words]
-    random.seed(time.time())
-    word_weights = [1 / (stats.get(word, 1)) for word in dictation_words]
-    dictation_words = random.choices(dictation_words, weights=word_weights, k=min(max_words, len(dictation_words)))
-    logging.info(dictation_words)
+    # Select the words for dictation
+    dictation_words, stats = select_dictation_words(words, max_words)
 
     # Play the dictation game
     score = 0
@@ -138,13 +134,9 @@ def dictation_game(grade_override=None):
                         break
                     else:
                         print(colored("Try again: ", 'yellow'), end="")
-        with open(STATS_FILE, 'wb') as f:
-            logging.debug(f"Saved stats: {stats}")
-            pickle.dump(stats, f)
+        save_stats(stats)
     except KeyboardInterrupt:
-        with open(STATS_FILE, 'wb') as f:
-            logging.debug(f"Saved stats (interrupted): {stats}")
-            pickle.dump(stats, f)
+        save_stats(stats)
 
     print(colored(f"\nYour score is {score}/{len(dictation_words)}", 'green'))
 
