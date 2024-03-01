@@ -14,6 +14,8 @@
 * `pyyaml` (https://pyyaml.org/)
 * `termcolor` (https://pypi.org/project/termcolor/)
 
+Install these via `pip install -r requirements.txt`
+
 ## Usage
 * `python dictation_game.py [--grade {grade1|grade3|nltk}]`
 * Use grades as named in `words.yaml` configuration file

@@ -1,0 +1,7 @@
+colorama
+google-cloud-texttospeech
+nltk
+openai
+pygame
+pyyaml
+termcolor
