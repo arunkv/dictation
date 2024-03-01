@@ -1,4 +1,10 @@
-# Description: A simple dictation game that uses OpenAI's text to speech API to generate speech for the words
+"""
+This module contains the implementation of a simple dictation game that uses Google's or
+OpenAI's text-to-speech API to generate speech for the words.
+"""
+
+# Description: A simple dictation game that uses Google's or OpenAI's text-to-speech
+# API to generate speech for the words
 
 #    Copyright 2024 Arun K Viswanathan
 #
@@ -72,7 +78,8 @@ def select_dictation_words(words, max_words):
     dictation_words = [item.lower() for item in words]
     random.seed(time.time())
     word_weights = [1 / (stats.get(word, 1)) for word in dictation_words]
-    dictation_words = random.choices(dictation_words, weights=word_weights, k=min(max_words, len(dictation_words)))
+    dictation_words = random.choices(dictation_words, weights=word_weights,
+                                     k=min(max_words, len(dictation_words)))
     logging.info(dictation_words)
     return dictation_words, stats
 
