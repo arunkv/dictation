@@ -10,6 +10,7 @@
 
 import argparse
 import logging
+import nltk
 import os
 import pickle
 import random
@@ -57,7 +58,17 @@ def dictation_game(grade_override=None):
     grade = grade_override or data['config']['grade']
     max_words = int(data['config']['max_words'])
     max_attempts = int(data['config']['max_attempts'])
-    words = list(set(data[grade]))  # Remove duplicates
+    if grade is None or grade == 'nltk':
+        try:
+            words = nltk.corpus.words.words()
+        except LookupError:
+            nltk.download('words')
+            logging.info("Downloading NLTK words corpus")
+            words = nltk.corpus.words.words()
+            logging.info(f"NLTK words corpus downloaded with {len(words)} words")
+
+    else:
+        words = list(set(data[grade]))  # Remove duplicates
 
     ai = data['config']['ai']
     ai_options = data.get(ai, {})

@@ -6,16 +6,18 @@
 * [The Sound of Learning: Using OpenAI’s Text-to-Speech API for a Simple Dictation Game for Kids](https://arunkv.medium.com/the-sound-of-learning-using-openais-text-to-speech-api-for-a-simple-dictation-game-for-kids-e237db497ad1)
 
 ## Required Packages
+* `colorama` (https://pypi.org/project/colorama/)
+* `google-cloud-texttospeech` (https://pypi.org/project/google-cloud-texttospeech/)
+* `nltk` (https://www.nltk.org/)
+* `openai` (https://pypi.org/project/openai/)
 * `pygame` (https://www.pygame.org/)
 * `pyyaml` (https://pyyaml.org/)
 * `termcolor` (https://pypi.org/project/termcolor/)
-* `colorama` (https://pypi.org/project/colorama/)
-* `openai` (https://pypi.org/project/openai/)
-* `google-cloud-texttospeech` (https://pypi.org/project/google-cloud-texttospeech/)
 
 ## Usage
-* `python dictation_game.py [--grade {grade1|grade3}]`
+* `python dictation_game.py [--grade {grade1|grade3|nltk}]`
 * Use grades as named in `words.yaml` configuration file
+* To use NLTK's wordnet to generate words, set `grade` to `nltk`
 * To use OpenAI's Text-to-Speech:
   * OpenAI's TTS API (https://platform.openai.com/docs/guides/text-to-speech)
   * Needs valid OpenAPI API key set as `OPENAI_API_KEY` environment variable (https://platform.openai.com/api-keys)
