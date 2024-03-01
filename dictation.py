@@ -87,9 +87,6 @@ def select_dictation_words(words, max_words):
 def dictation_game(grade_override=None):
     # Load the game configuration
     data = load_config(CONFIG_FILE)
-    words = get_words_for_grade(data, grade_override)
-    max_words = int(data['config']['max_words'])
-    max_attempts = int(data['config']['max_attempts'])
     ai = data['config']['ai']
     ai_options = data.get(ai, {})
 
@@ -104,7 +101,9 @@ def dictation_game(grade_override=None):
     colorama_init()
 
     # Select the words for dictation
-    dictation_words, stats = select_dictation_words(words, max_words)
+    dictation_words, stats = select_dictation_words(get_words_for_grade(data,
+                                                                        grade_override),
+                                                    int(data['config']['max_words']))
 
     # Play the dictation game
     score = 0
@@ -136,7 +135,7 @@ def dictation_game(grade_override=None):
                     tries += 1
                     # Decrease the word's usage so that it is played more often
                     stats[word] = max(1, stats.get(word, 0) - 1)
-                    if tries == max_attempts:
+                    if tries == int(data['config']['max_attempts']):
                         print(colored(f"Sorry, the word was {word}", 'red'))
                         break
                     else:
