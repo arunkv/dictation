@@ -65,7 +65,7 @@ def get_words_for_grade(data, grade_override):
             nltk.download('words')
             logging.info("Downloading NLTK words corpus")
             words = nltk.corpus.words.words()
-            logging.info(f"NLTK words corpus downloaded with {len(words)} words")
+            logging.info("NLTK words corpus downloaded with %s words", len(words))
     else:
         words = list(set(data[grade]))  # Remove duplicates
     return words
@@ -110,7 +110,7 @@ def dictation_game(grade_override=None):
     score = 0
     try:
         for word in dictation_words:
-            logging.info(f"The word is {word}")
+            logging.info("The word is %s", word)
 
             print(f"Write down the word you hear: ", end="")
             speech_file_path = factory.generate_speech_file(word, ai_options)
