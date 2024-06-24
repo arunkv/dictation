@@ -1,6 +1,6 @@
 config:
   ai: google
-  grade: grade1
+  grade: grade2
   max_words: 5
   max_attempts: 2
 
@@ -63,6 +63,27 @@ grade1:
   - also
   - woodpecker
 
+grade2:
+  - lamb
+  - comb
+  - thumb
+  - crumbs
+  - plumber
+  - climbing
+  - mother
+  - father
+  - shin
+  - bench
+  - song
+  - trunk
+  - knee
+  - knit
+  - know
+  - knock
+  - knight
+  - penknife
+  - grandmother
+  - grandfather
 
 grade3:
   - Freedom
