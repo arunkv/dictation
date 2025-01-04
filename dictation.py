@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 This module contains the implementation of a simple dictation game that uses Google's or
 OpenAI's text-to-speech API to generate speech for the words.
